@@ -1,0 +1,14 @@
+
+
+npm create vite . => React => JavaScript
+npm install
+npm i react-router-dom
+npm run lint
+npm install axios
+npm install react-toastify
+npm install -D tailwindcss postcss autoprefixer
+
+
+npm init --yes
+npm install express mongoose jsonwebtoken bcrypt
+npm install --save-dev nodemon
