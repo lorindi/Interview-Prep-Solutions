@@ -3,7 +3,6 @@ let notes = [];
 
 export const createNote = (req, res) => {
   const { title, description } = req.body;
-  console.log(title, description);
 
   try {
     if (!title.trim() || !description.trim())
@@ -92,7 +91,6 @@ export const allNotes = (req, res) => {
     if (notes.length === 0) {
       return res.status(200).json({ message: "No notes available", notes: [] });
     }
-    console.log('notes:', notes);
     
     res.status(200).json({ message: "Notes retrieved successfully", notes });
   } catch (err) {
