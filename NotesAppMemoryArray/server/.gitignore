@@ -1,0 +1,49 @@
+# Node modules
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Logs
+logs
+*.log
+*.log.*
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Database files
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+.tmp/
+.temp/
+
+# IDE/Editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*.swn
+
+# Coverage directory used by testing tools
+coverage/
+
+# Built files (for example, if using Babel)
+dist/
+build/
+
+# Miscellaneous
+*.bak
+*.pid
+*.seed
+*.pid.lock
