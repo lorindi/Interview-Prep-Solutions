@@ -101,9 +101,11 @@ export const allNotes = (req, res) => {
 
 export const singleNote = (req, res) => {
   const { id } = req.params;
+  
 
   try {
     const index = notes.findIndex((note) => note.id === id);
+    
     if (index === -1)
       return res.status(404).json({ message: "Note not found" });
 
