@@ -1,74 +1,119 @@
+import { v4 as uuidv4 } from "uuid";
 let notes = [];
 
 export const createNote = (req, res) => {
-    try {
-        const note = req.body.note;
-        notes.push(note);
-        res.status(200).json({ message: 'Note created successfully', note: note });
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({ message: 'Failed to create note' });
+  const { title, description } = req.body;
+  console.log(title, description);
+
+  try {
+    if (!title.trim() || !description.trim())
+      return res
+        .status(400)
+        .json({ message: "Title and description are required" });
+
+    if (typeof title !== "string" || typeof description !== "string") {
+      return res
+        .status(400)
+        .json({ message: "Title and description must be strings" });
     }
-}
+
+    const newNote = {
+      id: uuidv4(),
+      title: title.trim(),
+      description: description.trim(),
+    };
+
+    notes.push(newNote);
+
+    res
+      .status(200)
+      .json({ message: "Note created successfully", note: newNote });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to create node" });
+  }
+};
 
 export const updateNote = (req, res) => {
-    try {
-        const index = req.body.index;
-        const updatedNote = req.body.note;
-        if (index >= 0 && index < notes.length) {
-            notes[index] = updatedNote;
-            res.status(200).json({ message: 'Note updated successfully', note: updatedNote });
-        } else {
-            res.status(404).json({ message: 'Note not found' });
-        }
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({ message: 'Failed to update note' });
+  const { id } = req.params;
+  const { title, description } = req.body;
+  try {
+    const index = notes.findIndex((note) => note.id === id);
+
+    if (index === -1) {
+      return res.status(404).json({ message: "Note not found" });
     }
-}
+    if (title && (typeof title !== "string" || !title.trim())) {
+      return res
+        .status(400)
+        .json({ message: "Title must be a non-empty string" });
+    }
+
+    if (
+      description &&
+      (typeof description !== "string" || !description.trim())
+    ) {
+      return res
+        .status(400)
+        .json({ message: "Description must be a non-empty string" });
+    }
+
+    if (title?.trim()) notes[index].title = title.trim();
+    if (description?.trim()) notes[index].description = description.trim();
+
+    res
+      .status(200)
+      .json({ message: "Note updated successfully", note: notes[index] });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to update node" });
+  }
+};
 
 export const deleteNote = (req, res) => {
-    try {
-        const index = req.body.index;
-        if (index >= 0 && index < notes.length) {
-            const deletedNote = notes.splice(index, 1);
-            res.status(200).json({ message: 'Note deleted successfully', note: deletedNote });
-        } else {
-            res.status(404).json({ message: 'Note not found' });
-        }
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({ message: 'Failed to delete note' });
-    }
-}
+  const { id } = req.params;
 
-export const listNotes = (req, res) => {
-    try {
-        res.status(200).json({ message: 'Notes retrieved successfully', notes: notes });
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({ message: 'Failed to retrieve notes' });
+  try {
+    const index = notes.findIndex((note) => note.id === id);
+
+    if (index === -1)
+      return res.status(404).json({ message: "Note not found" });
+
+    notes.splice(index, 1);
+    res.status(200).json({ message: "Note deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to delete note" });
+  }
+};
+
+export const allNotes = (req, res) => {
+  try {
+    if (notes.length === 0) {
+      return res.status(200).json({ message: "No notes available", notes: [] });
     }
-}
+    console.log('notes:', notes);
+    
+    res.status(200).json({ message: "Notes retrieved successfully", notes });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Failed to retrieve notes" });
+  }
+};
 
 export const singleNote = (req, res) => {
-    try {
-        const index = req.body;
-        console.log(index);
-        
+  const { id } = req.params;
 
-        
-        if (index >= 0 && index < notes.length || index === 0) {
-            res.status(200).json({ message: 'Note retrieved successfully', note: notes[index] });
-        } else {
-            res.status(404).json({ message: 'Note not found' });
-        }
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({ message: 'Failed to retrieve note' });
-    }
-}
+  try {
+    const index = notes.findIndex((note) => note.id === id);
+    if (index === -1)
+      return res.status(404).json({ message: "Note not found" });
 
-
-
-
+    res
+      .status(200)
+      .json({ message: "Note retrieved successfully", note: notes[index] });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to retrieve note" });
+  }
+};
