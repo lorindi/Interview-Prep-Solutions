@@ -4,6 +4,9 @@ let notes = [];
 export const createNote = (req, res) => {
   const { title, description } = req.body;
 
+  console.log(req.body);
+  
+
   try {
     if (!title.trim() || !description.trim())
       return res
@@ -18,8 +21,8 @@ export const createNote = (req, res) => {
 
     const newNote = {
       id: uuidv4(),
-      title: title.trim(),
-      description: description.trim(),
+      title: title,
+      description: description,
     };
 
     notes.push(newNote);
