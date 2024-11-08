@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { singleNote, deleteNote } from "../services/notesService.js";
 function SinglePage() {
   const { id } = useParams();
   const [note, setNote] = useState(null);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchSingleNote();
@@ -22,7 +22,7 @@ function SinglePage() {
   const handleDelete = async (id) => {
     try {
       await deleteNote(id);
-      navigate('/')
+      navigate("/");
     } catch (err) {
       console.log(err);
     }
@@ -35,7 +35,9 @@ function SinglePage() {
           <p>{note.description}</p>
           <div>
             <button onClick={() => handleDelete(note.id)}>Delete</button>
-            <button>Update</button>
+            <Link to={`/update/${id}`}>
+              <button>Update</button>
+            </Link>
           </div>
         </>
       ) : (
