@@ -1,15 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { updateNote, singleNote } from "../services/notesService";
+import { toast} from "react-toastify";
 function UpdatePage() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const [title, setTitle] = useState();
-  const [description, setDescription] = useState();
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [isFormValid, setIsFormValid] = useState(false);
 
   useEffect(() => {
     fetchNoteData();
   }, [id]);
+  
+  useEffect(() => {
+    validateForm(); 
+  }, [title, description]);
 
   const fetchNoteData = async () => {
     try {
@@ -19,6 +25,15 @@ function UpdatePage() {
       setDescription(description);
     } catch (err) {
       console.log(err);
+      toast.error("Failed to fetch the note data.");
+    }
+  };
+
+  const validateForm = () => {
+    if (title.trim() && description.trim()) {
+      setIsFormValid(true);
+    } else {
+      setIsFormValid(false);
     }
   };
 
@@ -26,9 +41,11 @@ function UpdatePage() {
     e.preventDefault();
     try {
       await updateNote(id, { title, description });
+      toast.success("Note updated successfully!");
       navigate("/");
     } catch (err) {
       console.error(err);
+      toast.error("Failed to update the note.");
     }
   };
 
@@ -46,7 +63,7 @@ function UpdatePage() {
         value={description}
         onChange={(e) => setDescription(e.target.value)}
       />
-      <button type="submit">Update</button>
+      <button type="submit" disabled={!isFormValid}>Update</button>
     </form>
   );
 }
